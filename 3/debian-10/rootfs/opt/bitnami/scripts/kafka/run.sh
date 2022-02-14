@@ -23,6 +23,13 @@ if [[ "${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL ]]; then
     export KAFKA_OPTS="$KAFKA_OPTS $ZOOKEEPER_SSL_CONFIG"
 fi
 
+
+for kafka_conf_var in "${!KAFKA_EVAL_CFG_@}"; do
+    kafka_conf_key="$(echo "${kafka_conf_var}" | sed -e 's/^KAFKA_EVAL_CFG_//g')"
+    kafka_conf_val=$(eval "${!kafka_conf_var}")
+    export "KAFKA_CFG_$kafka_conf_key"=$kafka_conf_val
+done
+
 flags=("$KAFKA_CONF_FILE")
 [[ -z "${KAFKA_EXTRA_FLAGS:-}" ]] || flags=("${flags[@]}" "${KAFKA_EXTRA_FLAGS[@]}")
 START_COMMAND=("$KAFKA_HOME/bin/kafka-server-start.sh" "${flags[@]}" "$@")
