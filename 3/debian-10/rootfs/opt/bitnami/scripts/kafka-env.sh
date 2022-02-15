@@ -18,13 +18,6 @@ export BITNAMI_VOLUME_DIR="/bitnami"
 export MODULE="${MODULE:-kafka}"
 export BITNAMI_DEBUG="${BITNAMI_DEBUG:-false}"
 
-# By Setting EVAL for kubernetes Statefulset support command from env variable
-for kafka_conf_var in "${!KAFKA_EVAL_CFG_@}"; do
-    kafka_conf_key="$(echo "${kafka_conf_var}" | sed -e 's/^KAFKA_EVAL_CFG_//g')"
-    kafka_conf_val=$(eval "${!kafka_conf_var}")
-    export "KAFKA_CFG_$kafka_conf_key"=$kafka_conf_val
-done
-
 
 # By setting an environment variable matching *_FILE to a file path, the prefixed environment
 # variable will be overridden with the value specified in that file
@@ -125,3 +118,11 @@ export KAFKA_CLIENT_PASSWORDS="${KAFKA_CLIENT_PASSWORDS:-bitnami}"
 export KAFKA_HEAP_OPTS="${KAFKA_HEAP_OPTS:--Xmx1024m -Xms1024m}"
 
 # Custom environment variables may be defined below
+
+
+# By Setting EVAL for kubernetes Statefulset support command from env variable
+for kafka_conf_var in "${!KAFKA_EVAL_CFG_@}"; do
+    kafka_conf_key="$(echo "${kafka_conf_var}" | sed -e 's/^KAFKA_EVAL_CFG_//g')"
+    kafka_conf_val=$(eval "${!kafka_conf_var}")
+    export "KAFKA_CFG_$kafka_conf_key"=$kafka_conf_val
+done
